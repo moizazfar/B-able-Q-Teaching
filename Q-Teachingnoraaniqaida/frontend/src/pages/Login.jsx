@@ -6,8 +6,6 @@ import {
   Button,
   Typography,
   Link,
-  FormControlLabel,
-  Checkbox,
   CircularProgress,
   Snackbar,
   InputAdornment,
@@ -89,8 +87,6 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    is_student: false,
-    is_teacher: false,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -99,39 +95,35 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value, checked, type } = e.target;
-    const val = type === "checkbox" ? checked : value.trim();
+    const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: val,
+      [name]: value.trim(),
     }));
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const { username, password, is_student, is_teacher } = formData;
+    const { username, password } = formData;
 
     if (!username || !password) {
       setError("Username and Password are required.");
       return;
     }
 
-    if (!is_student && !is_teacher) {
-      setError("Please select either Student or Teacher.");
-      return;
-    }
-
     setLoading(true);
+    setError("");
+
     try {
       const response = await axios.post(
         "http://localhost:8000/api/accounts/token/",
         {
           username,
           password,
-          is_student,
-          is_teacher,
+          is_student: true, // Directly logging in as a student
         }
       );
+
       console.log("Login successful:", response.data);
 
       localStorage.setItem("access_token", response.data.access);
@@ -140,13 +132,7 @@ const LoginPage = () => {
       setSuccessMessage("Successfully logged in!");
       setOpenSnackbar(true);
 
-      if (is_student) {
-        navigate("/student-dashboard");
-      } else if (is_teacher) {
-        navigate("/teacher-dashboard");
-      } else {
-        navigate("/login");
-      }
+      navigate("/student-dashboard");
     } catch (err) {
       setError("Failed to sign in. Check username and password.");
       console.error("Login error:", err);
@@ -211,28 +197,6 @@ const LoginPage = () => {
                       </InputAdornment>
                     ),
                   }}
-                />
-              </div>
-              <div className={classes.formGroup}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={formData.is_student}
-                      onChange={handleChange}
-                      name="is_student"
-                    />
-                  }
-                  label="Student"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={formData.is_teacher}
-                      onChange={handleChange}
-                      name="is_teacher"
-                    />
-                  }
-                  label="Teacher"
                 />
               </div>
               <Button

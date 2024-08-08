@@ -7,8 +7,6 @@ import {
   Button,
   Typography,
   Link,
-  FormControlLabel,
-  Checkbox,
   CircularProgress,
   Snackbar,
   Alert,
@@ -66,7 +64,6 @@ const useStyles = makeStyles((theme) => ({
   errorText: {
     color: "red",
     marginTop: "10px",
-    textAlign: "center",
   },
   successText: {
     color: "green",
@@ -87,8 +84,6 @@ const SignUpPage = () => {
     username: "",
     email: "",
     password: "",
-    is_student: false,
-    is_teacher: false,
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -96,21 +91,16 @@ const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    const { username, email, password, is_student, is_teacher } = formData;
-
-    if (!is_student && !is_teacher) {
-      setError("Please select either Student or Teacher.");
-      return;
-    }
+    const { username, email, password } = formData;
 
     setLoading(true);
     setError("");
@@ -122,8 +112,7 @@ const SignUpPage = () => {
           username,
           email,
           password,
-          is_student,
-          is_teacher,
+          is_student: true,
         },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -210,28 +199,6 @@ const SignUpPage = () => {
                     </InputAdornment>
                   ),
                 }}
-              />
-            </div>
-            <div className={classes.formGroup}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={formData.is_student}
-                    onChange={handleChange}
-                    name="is_student"
-                  />
-                }
-                label="Student"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={formData.is_teacher}
-                    onChange={handleChange}
-                    name="is_teacher"
-                  />
-                }
-                label="Teacher"
               />
             </div>
             <Button

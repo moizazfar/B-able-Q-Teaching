@@ -1,14 +1,14 @@
 {
   "builds": [
     {
-      "src": "manage.py",
-      "use": "@vercel/python",
-      "config": { "maxLambdaSize": "50mb" }
-    },
-    {
       "src": "back/wsgi.py",
       "use": "@vercel/python",
-      "config": { "maxLambdaSize": "50mb" }
+      "config": { "maxLambdaSize": "15mb" }
+    },
+    {
+      "src": "build.sh",
+      "use": "@vercel/python",
+      "config": { "maxLambdaSize": "15mb" }
     }
   ],
   "routes": [

@@ -36,7 +36,7 @@ def recognize_sign(request):
     )
 
 
-model = tf.keras.models.load_model("signrecognition/ArASL-BestModel.hdf5")
+# model = tf.keras.models.load_model("signrecognition/ArASL-BestModel.hdf5")
 
 
 # @api_view(["POST"])
