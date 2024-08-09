@@ -3,7 +3,6 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import tensorflow as tf
 import numpy as np
-import cv2
 from PIL import Image
 import io
 from django.middleware.csrf import get_token
