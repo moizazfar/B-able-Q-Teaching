@@ -37,7 +37,7 @@ const ContactForm = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("http://127.0.0.1:8000/api/accounts/contact/", formData);
+      await axios.post("https://fyp-back.up.railway.app/api/accounts/contact/", formData);
       setSnackbarMessage("Your message has been sent successfully! 😊");
       setSnackbarSeverity("success");
       setFormData({

@@ -13,8 +13,6 @@ import HuroofMufradat from "./pages/HuroofMufradat";
 import HuroofMurakkabat from "./pages/HuroofMurakkabat";
 import HuroofMaraqatat from "./pages/HuroofMaraqatat";
 import StudentDashboard from "./pages/Dashboard/StudentDashboard";
-import LoginForm from "./pages/DemoLogin";
-import SignupForm from "./pages/DemoSignup";
 import TeacherDashboard from "./pages/Dashboard/TeacherDashboard";
 import PrivateRoute from "./PrivateRoutes";
 

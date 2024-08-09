@@ -107,7 +107,7 @@ const SignUpPage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/accounts/register/",
+        "https://fyp-back.up.railway.app/api/accounts/register/",
         {
           username,
           email,

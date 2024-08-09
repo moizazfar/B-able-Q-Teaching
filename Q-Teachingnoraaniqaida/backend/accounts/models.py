@@ -15,6 +15,9 @@ class Student(models.Model):
     father_name = models.CharField(max_length=100)
     gender = models.CharField(max_length=50)
     age = models.IntegerField(null=True)
+    profile_picture = models.ImageField(
+        upload_to="profile_pics/", blank=True, null=True
+    )
 
     def __str__(self):
         return f"{self.username}"
@@ -59,5 +62,3 @@ class VideoProgress(models.Model):
 
     def __str__(self):
         return f"{self.student.username} - {self.alphabet_name} ({self.video_id})"
-
-

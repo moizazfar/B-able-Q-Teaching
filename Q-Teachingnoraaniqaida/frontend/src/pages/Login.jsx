@@ -116,11 +116,11 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/accounts/token/",
+        "https://fyp-back.up.railway.app/api/accounts/token/",
         {
           username,
           password,
-          is_student: true, // Directly logging in as a student
+          is_student: true,
         }
       );
 

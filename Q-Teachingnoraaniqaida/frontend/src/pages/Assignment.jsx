@@ -37,7 +37,7 @@ const Assignment = () => {
     const fetchStudentProgress = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/accounts/student-progress",
+          "https://fyp-back.up.railway.app/api/accounts/student-progress",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -53,7 +53,7 @@ const Assignment = () => {
     const fetchVideoProgress = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/accounts/video-progress/",
+          "https://fyp-back.up.railway.app/api/accounts/video-progress/",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -121,7 +121,7 @@ const Assignment = () => {
       const marksObtained = isNewAlphabet ? 10 : 0;
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/accounts/student-progress/",
+        "https://fyp-back.up.railway.app/api/accounts/student-progress/",
         {
           assignment_type: selectedAssignment,
           completed_assignments: 1,
@@ -170,7 +170,7 @@ const Assignment = () => {
       const formData = new FormData();
       formData.append("image", blob, "capture.jpg");
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/recognize_sign/",
+        "https://fyp-back.up.railway.app/api/recognize_sign/",
         formData,
         {
           headers: {

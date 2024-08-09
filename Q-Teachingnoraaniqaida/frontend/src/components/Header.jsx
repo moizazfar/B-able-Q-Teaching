@@ -20,8 +20,25 @@ const Header = () => {
   const [userMenuEl, setUserMenuEl] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [studentDetails, setStudentDetails] = useState();
 
   useEffect(() => {
+    const fetchStudentDetails = async () => {
+      try {
+        const response = await axios.get(
+          "https://fyp-back.up.railway.app/api/accounts/student-details/",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        setStudentDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching student details:", error);
+      }
+    };
+
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
       checkLoginStatus();
@@ -29,6 +46,7 @@ const Header = () => {
       setIsLoggedIn(false);
       setUser(null);
     }
+    fetchStudentDetails();
   }, [isLoggedIn]);
 
   const checkLoginStatus = async () => {
@@ -36,7 +54,7 @@ const Header = () => {
       const accessToken = localStorage.getItem("access_token");
       if (accessToken) {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/accounts/user/",
+          "https://fyp-back.up.railway.app/api/accounts/user/",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -78,7 +96,7 @@ const Header = () => {
       const refreshToken = localStorage.getItem("refresh_token");
       if (refreshToken) {
         await axios.post(
-          "http://127.0.0.1:8000/api/accounts/logout/",
+          "https://fyp-back.up.railway.app/api/accounts/logout/",
           { refresh: refreshToken },
           {
             headers: {
@@ -214,7 +232,11 @@ const Header = () => {
         {isLoggedIn ? (
           <>
             <IconButton onClick={handleUserMenuClick} sx={{ ml: 2 }}>
-              <Avatar sx={{ bgcolor: "#C39346" }}>{user?.username?.[0]}</Avatar>
+              <Avatar
+                sx={{ bgcolor: "#C39346" }}
+                alt={user?.username}
+                src={studentDetails?.profile_picture || user?.username}
+              />
             </IconButton>
             <Menu
               anchorEl={userMenuEl}

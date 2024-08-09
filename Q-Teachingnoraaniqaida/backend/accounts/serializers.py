@@ -68,6 +68,7 @@ class StudentSerializer(serializers.ModelSerializer):
             "father_name",
             "gender",
             "age",
+            "profile_picture",
         ]
         read_only_fields = ["password", "user"]
 

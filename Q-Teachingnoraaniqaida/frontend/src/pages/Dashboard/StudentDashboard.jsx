@@ -11,8 +11,10 @@ import {
   Modal,
   TextField,
   Grid,
+  IconButton,
 } from "@mui/material";
 import axios from "axios";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
 
 const StudentDashboard = () => {
   const [studentDetails, setStudentDetails] = useState({
@@ -22,17 +24,19 @@ const StudentDashboard = () => {
     father_name: "",
     gender: "",
     age: "",
+    profile_picture: "",
   });
   const [studentProgress, setStudentProgress] = useState([]);
   const [videoProgress, setVideoProgress] = useState([]);
   const [isProfileIncomplete, setIsProfileIncomplete] = useState(false);
   const [open, setOpen] = useState(false);
+  const [profilePicFile, setProfilePicFile] = useState(null);
 
   useEffect(() => {
     const fetchStudentDetails = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/accounts/student-details/",
+          "https://fyp-back.up.railway.app/api/accounts/student-details/",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -49,7 +53,7 @@ const StudentDashboard = () => {
     const fetchStudentProgress = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/accounts/student-progress/",
+          "https://fyp-back.up.railway.app/api/accounts/student-progress/",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -65,7 +69,7 @@ const StudentDashboard = () => {
     const fetchVideoProgress = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/accounts/video-progress/",
+          "https://fyp-back.up.railway.app/api/accounts/video-progress/",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -98,14 +102,29 @@ const StudentDashboard = () => {
     });
   };
 
+  const handleProfilePicChange = (e) => {
+    setProfilePicFile(e.target.files[0]);
+  };
+
   const handleProfileFormSubmit = async () => {
     try {
+      const formData = new FormData();
+      formData.append("email", studentDetails.email);
+      formData.append("username", studentDetails.username);
+      formData.append("father_name", studentDetails.father_name);
+      formData.append("gender", studentDetails.gender);
+      formData.append("age", studentDetails.age);
+      if (profilePicFile) {
+        formData.append("profile_picture", profilePicFile);
+      }
+
       await axios.put(
-        "http://127.0.0.1:8000/api/accounts/student-details/update_profile/",
-        studentDetails,
+        "https://fyp-back.up.railway.app/api/accounts/student-details/update_profile/",
+        formData,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
@@ -213,8 +232,11 @@ const StudentDashboard = () => {
               ) : (
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                   <Avatar
-                    src="https://via.placeholder.com/150"
-                    sx={{ width: 120, height: 120, mx: "auto" }}
+                    src={
+                      studentDetails.profile_picture ||
+                      "https://via.placeholder.com/150"
+                    }
+                    sx={{ width: 150, height: 150, mx: "auto" }}
                   />
                   <Typography variant="h6">Student Profile</Typography>
                   <Typography variant="body1">
@@ -284,9 +306,6 @@ const StudentDashboard = () => {
                     <Typography variant="h6" sx={{ mt: 1 }}>
                       {calculateVideoProgress("Mufradat")}% Completed
                     </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      Last seen 5 days ago
-                    </Typography>
                   </CardContent>
                 </Card>
                 <Card
@@ -299,7 +318,11 @@ const StudentDashboard = () => {
                     border: "solid",
                   }}
                 >
-                  <CardContent sx={{ textAlign: "center" }}>
+                  <CardContent
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
                     <Typography variant="h6">Lesson 2</Typography>
                     <Typography variant="h6">Huroof Murakkabat</Typography>
                     <CircularProgress
@@ -311,9 +334,6 @@ const StudentDashboard = () => {
                     />
                     <Typography variant="h6" sx={{ mt: 1 }}>
                       {calculateVideoProgress("Murakkabat")}% Completed
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      Last seen 5 days ago
                     </Typography>
                   </CardContent>
                 </Card>
@@ -327,7 +347,11 @@ const StudentDashboard = () => {
                     border: "solid",
                   }}
                 >
-                  <CardContent sx={{ textAlign: "center" }}>
+                  <CardContent
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
                     <Typography variant="h6">Lesson 3</Typography>
                     <Typography variant="h6">Huroof Murqattaat</Typography>
                     <CircularProgress
@@ -340,12 +364,9 @@ const StudentDashboard = () => {
                     <Typography variant="h6" sx={{ mt: 1 }}>
                       {calculateVideoProgress("Murqattaat")}% Completed
                     </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      Last seen 5 days ago
-                    </Typography>
                   </CardContent>
                 </Card>
-              </Box>{" "}
+              </Box>
               <Box
                 sx={{
                   display: "flex",
@@ -374,7 +395,7 @@ const StudentDashboard = () => {
                           variant="determinate"
                           value={calculateAssignmentProgress("Mufradat")}
                           sx={{
-                            height: "10px",
+                            height: "15px",
                             borderRadius: "5px",
                             bgcolor: "#D3D3D3",
                           }}
@@ -389,7 +410,7 @@ const StudentDashboard = () => {
                           variant="determinate"
                           value={calculateAssignmentProgress("Murakkabat")}
                           sx={{
-                            height: "10px",
+                            height: "15px",
                             borderRadius: "5px",
                             bgcolor: "#D3D3D3",
                           }}
@@ -404,7 +425,7 @@ const StudentDashboard = () => {
                           variant="determinate"
                           value={calculateAssignmentProgress("Murqattaat")}
                           sx={{
-                            height: "10px",
+                            height: "15px",
                             borderRadius: "5px",
                             bgcolor: "#D3D3D3",
                           }}
@@ -431,67 +452,96 @@ const StudentDashboard = () => {
             border: "2px solid #000",
             boxShadow: 24,
             p: 4,
+            borderRadius: "25px",
           }}
         >
-          <Typography variant="h6" gutterBottom>
-            Update Your Profile
+          <Typography variant="h6" component="h2">
+            Complete Your Profile
           </Typography>
-          <Grid container spacing={2}>
+          <Grid container spacing={2} sx={{ mt: 2 }}>
             <Grid item xs={12}>
               <TextField
-                label="Username"
-                name="username"
-                value={studentDetails.username}
-                onChange={handleProfileFormChange}
+                label="Email"
                 fullWidth
+                name="email"
+                value={studentDetails.email}
+                onChange={handleProfileFormChange}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Email"
-                name="email"
-                value={studentDetails.email}
-                onChange={handleProfileFormChange}
+                label="Username"
                 fullWidth
+                name="username"
+                value={studentDetails.username}
+                onChange={handleProfileFormChange}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 label="Father Name"
+                fullWidth
                 name="father_name"
                 value={studentDetails.father_name}
                 onChange={handleProfileFormChange}
-                fullWidth
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 label="Gender"
+                fullWidth
                 name="gender"
                 value={studentDetails.gender}
                 onChange={handleProfileFormChange}
-                fullWidth
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 label="Age"
+                fullWidth
                 name="age"
                 value={studentDetails.age}
                 onChange={handleProfileFormChange}
-                fullWidth
               />
             </Grid>
+            <Grid item xs={12}>
+              <Grid item xs={12} display="flex" justifyContent="center">
+                <Typography sx={{ textAlign: "center", mt: 3 }}>
+                  Upload Your Profile Pic
+                </Typography>
+                <Avatar
+                  alt="Profile Picture"
+                  src={studentDetails.profile_picture}
+                  sx={{ width: 100, height: 100, mb: 2 }}
+                />
+                <input
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  id="profile-pic-upload"
+                  type="file"
+                  onChange={handleProfilePicChange}
+                />
+                <label htmlFor="profile-pic-upload">
+                  <IconButton
+                    color="primary"
+                    aria-label="upload picture"
+                    component="span"
+                  >
+                    <PhotoCamera />
+                  </IconButton>
+                </label>
+              </Grid>
+            </Grid>
           </Grid>
-          <Box sx={{ mt: 2 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleProfileFormSubmit}
-            >
-              Save
-            </Button>
-          </Box>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 3 }}
+            onClick={handleProfileFormSubmit}
+          >
+            Save Profile
+          </Button>
         </Box>
       </Modal>
     </Box>

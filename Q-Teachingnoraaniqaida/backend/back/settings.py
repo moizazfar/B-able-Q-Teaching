@@ -32,8 +32,17 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [".vercel.app", "127.0.0.1"]
 
+ALLOWED_HOSTS = [
+    ".vercel.app",
+    "localhost",
+    "127.0.0.1",
+    "fyp-back.up.railway.app",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://fyp-back.up.railway.app",
+    "https://bableqteaching.vercel.app",
+]
 
 # Application definition
 

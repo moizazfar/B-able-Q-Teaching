@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import Slider from "react-slick";
-import pic1 from "../Assets/image/image 2.png";
-import pic2 from "../Assets/image/image 2.png";
-import pic3 from "../Assets/image/image 2.png";
+import pic1 from "../Assets/Screenshots/A1.png";
+import pic2 from "../Assets/Screenshots/A2.png";
+import pic3 from "../Assets/Screenshots/A3.jpeg";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const AssignmentLanding = () => {
   const [images, setImages] = useState([pic1, pic2, pic3]);
 
-  useEffect(() => {
-    // Add more images or fetch from an API if needed
-  }, []);
 
   const settings = {
     dots: true,
@@ -62,10 +59,9 @@ const AssignmentLanding = () => {
                 src={image}
                 alt={`Assignment ${index + 1}`}
                 style={{
-                  // width: "100%",
-                  // height: "100%",
+                  width: "100%",
+                  justifyContent: "center",
                   objectFit: "cover",
-                  borderRadius: "20px",
                 }}
               />
             </Box>
