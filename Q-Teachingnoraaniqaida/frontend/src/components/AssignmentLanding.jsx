@@ -10,7 +10,10 @@ import "slick-carousel/slick/slick-theme.css";
 const AssignmentLanding = () => {
   const [images, setImages] = useState([pic1, pic2, pic3]);
 
-
+  useEffect(() => {
+    // Add more images or fetch from an API if needed
+  }, []);
+  
   const settings = {
     dots: true,
     infinite: true,
