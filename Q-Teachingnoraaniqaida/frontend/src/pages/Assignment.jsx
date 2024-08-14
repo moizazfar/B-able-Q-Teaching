@@ -115,7 +115,7 @@ const Assignment = () => {
     try {
       const isNewAlphabet = studentProgress.every(
         (progress) =>
-          progress.last_completed_huroof !== currentHuroof.alphabet_name
+          progress.id !== currentHuroof.id
       );
 
       const marksObtained = isNewAlphabet ? 10 : 0;
