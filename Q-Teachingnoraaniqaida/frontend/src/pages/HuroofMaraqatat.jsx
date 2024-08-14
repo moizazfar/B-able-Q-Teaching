@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import LockIcon from "@mui/icons-material/Lock";
-import videoData from "./VideoData";
+import huroofData from "./huroofData";
 
 const CourseCard = styled(Card)(({ theme }) => ({
   maxWidth: 345,
@@ -99,28 +99,31 @@ const HuroofMaraqatat = () => {
 
   const handleVideoEnd = async (course) => {
     try {
-      const accessToken = localStorage.getItem("access_token");
-      await axios.post(
-        "https://fyp-back.up.railway.app/api/accounts/video-progress/",
-        {
-          video_id: course.id,
-          completed: true,
-          alphabet_name: course.name,
-          assignment_type: "Murqattaat",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
+      if (!completedVideos.includes(course.id)) {
+        setCompletedVideos([...completedVideos, course.id]);
+        const accessToken = localStorage.getItem("access_token");
+        await axios.post(
+          "https://fyp-back.up.railway.app/api/accounts/video-progress/",
+          {
+            video_id: course.id,
+            completed: true,
+            alphabet_name: course.alphabet_name,
+            assignment_type: "Murqattaat",
           },
-        }
-      );
-      setCompletedVideos([...completedVideos, course.id]);
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      }
       closeModal();
     } catch (error) {
       console.error("Error updating video progress:", error);
     }
   };
+
   return (
     <Box className="courses" textAlign="center">
       <Box mb={5}>
@@ -138,54 +141,52 @@ const HuroofMaraqatat = () => {
         flexWrap="wrap"
         justifyContent="center"
       >
-        {videoData
-          .filter((alphabet) => alphabet.id >= 141)
-          .map((alphabet, index) => (
-            <CourseCard
-              key={alphabet.id}
-              onClick={() => handleCourseClick(alphabet, index)}
-              style={{
-                opacity:
-                  index !== 0 && !completedVideos.includes(alphabet.id - 1)
-                    ? 0.5
-                    : 1,
-                position: "relative",
-              }}
-            >
-              <CardMedia
-                component="img"
-                alt={`Alphabet ${alphabet.name}`}
-                height="140"
-                image={alphabet.image}
-                title={`Alphabet ${alphabet.name}`}
-              />
-              {index !== 0 && !completedVideos.includes(index - 1) && (
-                <LockOverlay>
-                  <Tooltip
-                    title="Please watch the previous video to unlock"
-                    arrow
-                  >
-                    <IconButton>
-                      <LockIcon sx={{ color: "#fff", fontSize: 40 }} />
-                    </IconButton>
-                  </Tooltip>
-                </LockOverlay>
-              )}
-              {completedVideos.includes(alphabet.id) && (
-                <Typography
-                  sx={{
-                    position: "absolute",
-                    top: 8,
-                    right: 8,
-                    color: "green",
-                    fontWeight: "bold",
-                  }}
+        {huroofData.Murqattaat.map((alphabet, index) => (
+          <CourseCard
+            key={alphabet.id}
+            onClick={() => handleCourseClick(alphabet, index)}
+            style={{
+              opacity:
+                index !== 0 && !completedVideos.includes(alphabet.id - 1)
+                  ? 0.5
+                  : 1,
+              position: "relative",
+            }}
+          >
+            <CardMedia
+              component="img"
+              alt={`Alphabet ${alphabet.alphabet_name}`}
+              height="140"
+              image={alphabet.image}
+              title={`Alphabet ${alphabet.alphabet_name}`}
+            />
+            {index !== 0 && !completedVideos.includes(alphabet.id - 1) && (
+              <LockOverlay>
+                <Tooltip
+                  title="Please watch the previous video to unlock"
+                  arrow
                 >
-                  ✓
-                </Typography>
-              )}
-            </CourseCard>
-          ))}
+                  <IconButton>
+                    <LockIcon sx={{ color: "#fff", fontSize: 40 }} />
+                  </IconButton>
+                </Tooltip>
+              </LockOverlay>
+            )}
+            {completedVideos.includes(alphabet.id) && (
+              <Typography
+                sx={{
+                  position: "absolute",
+                  top: 8,
+                  right: 8,
+                  color: "green",
+                  fontWeight: "bold",
+                }}
+              >
+                ✓
+              </Typography>
+            )}
+          </CourseCard>
+        ))}
       </Box>
 
       <Modal open={isModalOpen} onClose={closeModal}>
