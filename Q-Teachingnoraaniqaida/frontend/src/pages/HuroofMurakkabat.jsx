@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 import axios from "axios";
-import videoData from "./VideoData";
+import huroofData from "./huroofData";
 
 const CourseCard = styled(Card)(({ theme }) => ({
   maxWidth: 345,
@@ -58,135 +58,6 @@ const LockOverlay = styled(Box)(({ theme }) => ({
 }));
 
 const HuroofMurakkabat = () => {
-  const alphabetImages = [
-    "alif",
-    "laamalif",
-    "laamalif3",
-    "baaalif",
-    "laamalif2",
-    "laam",
-    "laamalif1",
-    "laamhaa",
-    "laamalif4",
-    "baalaambaa",
-    "kaaf",
-    "kaaf1",
-    "kabaa",
-    "kaafbaa",
-    "qaafalif",
-    "qaafalif1",
-    "bakataa",
-    "takasaa",
-    "baa",
-    "taa",
-    "saa",
-    "noon",
-    "yaa",
-    "baaalif",
-    "noonalif",
-    "taaalif",
-    "yaaalif",
-    "saaalif",
-    "baseen",
-    "yaaseen",
-    "noonseen",
-    "taseen",
-    "saseen",
-    "saajeem",
-    "taahaa",
-    "noonkha",
-    "yahaa",
-    "baajeem",
-    "yameem",
-    "bameem",
-    "noonmeem",
-    "tameem1",
-    "saameem",
-    "bayaa",
-    "yayaa",
-    "noonyaa",
-    "tayaa",
-    "sayaa",
-    "noonbalaam",
-    "tanoonlaam",
-    "bayalaam",
-    "yatalaam",
-    "sasalaam",
-    "noonbanoon",
-    "banoonoon",
-    "tayanoon",
-    "yatanoon",
-    "sasanoon",
-    "jeem",
-    "ha",
-    "kha",
-    "hasaa",
-    "khabaa",
-    "jeemtaa",
-    "tahataa",
-    "yajeembaa",
-    "bakhataa",
-    "taa1",
-    "haa1",
-    "bataa",
-    "yahaa1",
-    "tahaa",
-    "noonta",
-    "haa",
-    "yahabaa",
-    "bahaalif",
-    "bahameem",
-    "daal",
-    "zaal",
-    "jeemdaal",
-    "khazaa",
-    "raa",
-    "zaa",
-    "jeemraa",
-    "khazaa1",
-    "raa1",
-    "zaa1",
-    "yaraa",
-    "tazaa",
-    "seen",
-    "sheen",
-    "seenlaam",
-    "sheenlaam",
-    "suaad",
-    "zuad",
-    "tauu",
-    "zuaa",
-    "suadbaa",
-    "tauba",
-    "zuadalif",
-    "zuaalif",
-    "aaeen",
-    "gaeen",
-    "hamza",
-    "aeenza",
-    "gaeenra",
-    "suadaeen",
-    "zuadgaeen",
-    "baaeendaal",
-    "tagazaa",
-    "hamzaaa",
-    "aeenwow",
-    "aeenyaa",
-    "faa",
-    "qaaf",
-    "wow",
-    "qaafwow",
-    "fawow",
-    "faqaaflaam",
-    "qaaffalaam",
-    "yafaa",
-    "meem",
-    "hameem",
-    "laameem",
-    "tameem",
-    "tameemtaa",
-  ];
-
   const [selectedAlphabet, setSelectedAlphabet] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [completedVideos, setCompletedVideos] = useState([]);
@@ -228,23 +99,25 @@ const HuroofMurakkabat = () => {
 
   const handleVideoEnd = async (course) => {
     try {
-      const accessToken = localStorage.getItem("access_token");
-      await axios.post(
-        "https://fyp-back.up.railway.app/api/accounts/video-progress/",
-        {
-          video_id: course.id,
-          completed: true,
-          alphabet_name: course.name,
-          assignment_type: "Murakkabat",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
+      if (!completedVideos.includes(course.id)) {
+        setCompletedVideos([...completedVideos, course.id]);
+        const accessToken = localStorage.getItem("access_token");
+        await axios.post(
+          "https://fyp-back.up.railway.app/api/accounts/video-progress/",
+          {
+            video_id: course.id,
+            completed: true,
+            alphabet_name: course.alphabet_name,
+            assignment_type: "Murakkabat",
           },
-        }
-      );
-      setCompletedVideos([...completedVideos, course.id]);
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      }
       closeModal();
     } catch (error) {
       console.error("Error updating video progress:", error);
@@ -268,56 +141,52 @@ const HuroofMurakkabat = () => {
         flexWrap="wrap"
         justifyContent="center"
       >
-        {videoData
-          .filter((alphabet) => alphabet.id >= 30 && alphabet.id <= 140)
-          .map((alphabet, index) => (
-            <CourseCard
-              key={alphabet.id}
-              onClick={() => handleCourseClick(alphabet, index)}
-              style={{
-                opacity:
-                  index !== 0 && !completedVideos.includes(alphabet.id - 1)
-                    ? 0.5
-                    : 1,
-                position: "relative",
-              }}
-            >
-              <CardMedia
-                component="img"
-                alt={`Alphabet ${alphabet.name}`}
-                height="140"
-                image={alphabet.image}
-                title={`Alphabet ${alphabet.name}`}
-              />
-              {completedVideos.includes(alphabet.id) ? (
-                <Typography
-                  sx={{
-                    position: "absolute",
-                    top: 8,
-                    right: 8,
-                    color: "green",
-                    fontWeight: "bold",
-                  }}
+        {huroofData.Murakkabat.map((alphabet, index) => (
+          <CourseCard
+            key={alphabet.id}
+            onClick={() => handleCourseClick(alphabet, index)}
+            style={{
+              opacity:
+                index !== 0 && !completedVideos.includes(alphabet.id - 1)
+                  ? 0.5
+                  : 1,
+              position: "relative",
+            }}
+          >
+            <CardMedia
+              component="img"
+              alt={`Alphabet ${alphabet.alphabet_name}`}
+              height="140"
+              image={alphabet.image}
+              title={`Alphabet ${alphabet.alphabet_name}`}
+            />
+            {index !== 0 && !completedVideos.includes(alphabet.id - 1) && (
+              <LockOverlay>
+                <Tooltip
+                  title="Please watch the previous video to unlock"
+                  arrow
                 >
-                  ✓
-                </Typography>
-              ) : (
-                index !== 0 &&
-                !completedVideos.includes(alphabet.id - 1) && (
-                  <LockOverlay>
-                    <Tooltip
-                      title="Please watch the previous video to unlock"
-                      arrow
-                    >
-                      <IconButton>
-                        <LockIcon sx={{ color: "#fff", fontSize: 40 }} />
-                      </IconButton>
-                    </Tooltip>
-                  </LockOverlay>
-                )
-              )}
-            </CourseCard>
-          ))}
+                  <IconButton>
+                    <LockIcon sx={{ color: "#fff", fontSize: 40 }} />
+                  </IconButton>
+                </Tooltip>
+              </LockOverlay>
+            )}
+            {completedVideos.includes(alphabet.id) && (
+              <Typography
+                sx={{
+                  position: "absolute",
+                  top: 8,
+                  right: 8,
+                  color: "green",
+                  fontWeight: "bold",
+                }}
+              >
+                ✓
+              </Typography>
+            )}
+          </CourseCard>
+        ))}
       </Box>
 
       <Modal open={isModalOpen} onClose={closeModal}>
