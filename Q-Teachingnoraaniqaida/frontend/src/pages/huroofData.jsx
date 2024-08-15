@@ -186,7 +186,7 @@ const huroofData = {
   Murakkabat: [
     {
       id: 30,
-      alphabet_name: "Alif",
+      alphabet_name: "Aliff",
       image: require("../Assets/huroof/Huroof Mufradat/alif.png"),
       video: require("../Assets/huroof/videos/alif.mp4"),
     },
