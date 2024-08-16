@@ -92,7 +92,7 @@ const Assignment = () => {
       setDisplayedHuroof(remainingHuroof);
     }
   }, [remainingHuroof]);
-
+  console.log(currentHuroof);
   const handleOpenModal = (assignment) => {
     setSelectedAssignment(assignment);
     setOpenModal(true);
@@ -113,20 +113,31 @@ const Assignment = () => {
     setOpenCamera(false);
 
     try {
+      const currentHuroofId = huroofData[selectedAssignment].find(
+        (huroof) => huroof.alphabet_name === currentHuroof.alphabet_name
+      )?.id;
+
+      if (currentHuroofId === undefined || currentHuroofId === null) {
+        console.error("Error: currentHuroofId is not set correctly.");
+        return;
+      }
+
       const isNewAlphabet = studentProgress.every(
         (progress) =>
-          progress.last_completed_huroof !== currentHuroof.alphabet_name
+          !(
+            progress.last_completed_huroof === currentHuroof.alphabet_name &&
+            progress.last_completed_huroof_id === currentHuroofId
+          )
       );
-
-      const marksObtained = isNewAlphabet ? 10 : 0;
 
       const response = await axios.post(
         "https://fyp-back.up.railway.app/api/accounts/student-progress/",
         {
           assignment_type: selectedAssignment,
           completed_assignments: 1,
+          last_completed_huroof_id: parseInt(currentHuroofId),
           last_completed_huroof: currentHuroof.alphabet_name,
-          marks_obtained: marksObtained,
+          marks_obtained: isNewAlphabet ? 10 : 0,
         },
         {
           headers: {
@@ -142,7 +153,6 @@ const Assignment = () => {
       );
 
       setOpenSuccessModal(true);
-
       if (remainingHuroof.length === 1) {
         alert(
           `Congratulations! You've completed all letters in ${selectedAssignment}. Moving to the next assignment.`
@@ -210,7 +220,8 @@ const Assignment = () => {
             !studentProgress.some(
               (progress) =>
                 progress.assignment_type === nextAssignment &&
-                progress.last_completed_huroof === huroof.alphabet_name
+                progress.last_completed_huroof === huroof.alphabet_name &&
+                process.last_completed_huroof_id === huroof.id
             )
         )
       );
@@ -350,7 +361,8 @@ const Assignment = () => {
                 isCompleted={studentProgress.some(
                   (progress) =>
                     progress.assignment_type === selectedAssignment &&
-                    progress.last_completed_huroof === huroof.alphabet_name
+                    progress.last_completed_huroof === huroof.alphabet_name &&
+                    progress.last_completed_huroof_id === huroof.id
                 )}
               />
             ))
@@ -371,7 +383,8 @@ const Assignment = () => {
                 disabled={false}
                 completed={studentProgress.some(
                   (progress) =>
-                    progress.last_completed_huroof === huroof.alphabet_name
+                    progress.last_completed_huroof === huroof.alphabet_name &&
+                    progress.last_completed_huroof_id === huroof.id
                 )}
               />
             ))
