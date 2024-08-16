@@ -33,6 +33,7 @@ class StudentProgress(models.Model):
     assignment_type = models.CharField(max_length=20, choices=ASSIGNMENT_TYPES)
     completed_assignments = models.IntegerField(default=0)
     last_completed_huroof = models.CharField(max_length=10, blank=True, null=True)
+    last_completed_huroof_id = models.IntegerField(null=True, blank=True)
     marks_obtained = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
