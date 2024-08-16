@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Box,
   Typography,
@@ -12,9 +12,12 @@ import { useNavigate } from "react-router-dom";
 import Huruuf1 from "../Assets/quran/Rectangle 3.png";
 import Huruuf2 from "../Assets/quran/Rectangle 4.png";
 import Huruuf3 from "../Assets/quran/Rectangle 5.png";
+import arabicLesson from "../Assets/audio/Bismillah.mp3"; // Import your Arabic audio file
+// import subtitles from "../Assets/subtitles/subtitles_arabic.vtt"; // Import your Arabic subtitles file
 
 const OurLesson = () => {
   const navigate = useNavigate();
+  const audioRef = useRef(null); // Reference to the audio element
 
   const onHuroofMufradatClick = () => {
     navigate("/ourlesson/huroofmufradat");
@@ -27,6 +30,12 @@ const OurLesson = () => {
   const onHuroofMuraqattatClick = () => {
     navigate("/ourlesson/huroofmuraqattat");
   };
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  }, []);
 
   return (
     <Box sx={{ py: 4 }}>
@@ -43,6 +52,14 @@ const OurLesson = () => {
         >
           We have organized comprehensive Quran lessons for Abled kids.
         </Typography>
+      </Box>
+
+      {/* Arabic Audio Element with Subtitles */}
+      <Box sx={{ display: "none" }}>
+        <audio ref={audioRef} controls>
+          <source src={arabicLesson} type="audio/mp3" />
+          Your browser does not support the audio element.
+        </audio>
       </Box>
 
       <Grid container spacing={5} justifyContent="center">
