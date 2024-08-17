@@ -4,34 +4,53 @@ import { styled } from "@mui/system";
 import backgroundImage from "../Assets/BackgroundIMG.png";
 
 const HeroSection = styled(Paper)(({ theme }) => ({
-  backgroundImage: `linear-gradient(rgba(143, 176, 122, 0.7), rgba(143, 176, 122, 0.7)), url(${backgroundImage})`,
+  backgroundImage: `url(${backgroundImage})`,
   backgroundSize: "cover",
   backgroundPosition: "center",
-  // width: "100%",
-  minHeight: "60vh",
+  backgroundRepeat: "no-repeat",
+  minHeight: "70vh",
   display: "flex",
   flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: theme.spacing(12, 5),
-  textAlign: "center",
+  alignItems: "flex-start",
+  justifyContent: "flex-start",
+  padding: theme.spacing(8, 4),
+  textAlign: "left",
   color: "#8fb07a",
+  [theme.breakpoints.down("sm")]: {
+    padding: theme.spacing(4, 2),
+    backgroundSize: "contain",
+    backgroundPosition: "top",
+    minHeight: "20vh",
+  },
 }));
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
   color: "#10183D",
   fontSize: "50px",
   fontFamily: "Kaushan Script, sans-serif",
-  marginBottom: theme.spacing(4),
+  marginTop: theme.spacing(5),
+  marginLeft: theme.spacing(7),
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "22px",
+    marginTop: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+  },
 }));
 
 const ParagraphText = styled(Typography)(({ theme }) => ({
-  padding: theme.spacing(1),
+  marginTop: theme.spacing(2),
+  marginLeft: theme.spacing(7),
   fontSize: "20px",
   fontFamily: "Inter, sans-serif",
-  width: "75%",
+  width: "57%",
   color: "#d4af37",
   fontWeight: "800",
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "10px",
+    marginTop: theme.spacing(1),
+    marginLeft: theme.spacing(2),
+    width: "57%",
+  },
 }));
 
 const SectionHero = () => {
