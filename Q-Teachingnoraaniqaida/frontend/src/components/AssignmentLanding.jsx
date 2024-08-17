@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import Slider from "react-slick";
 import pic1 from "../Assets/Screenshots/A1.png";
 import pic2 from "../Assets/Screenshots/A2.png";
@@ -9,11 +9,11 @@ import "slick-carousel/slick/slick-theme.css";
 
 const AssignmentLanding = () => {
   const [images, setImages] = useState([pic1, pic2, pic3]);
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   useEffect(() => {
-    // Add more images or fetch from an API if needed
   }, []);
-  
+
   const settings = {
     dots: true,
     infinite: true,
@@ -28,29 +28,29 @@ const AssignmentLanding = () => {
   return (
     <Box
       sx={{
-        // height: "100vh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         bgcolor: "white",
-        padding: 4,
+        padding: isMobile ? 2 : 4,
       }}
     >
       <Typography
-        variant="h2"
+        variant="h4"
         sx={{
           fontFamily: "Kaushan Script",
           color: "#10183D",
-          fontSize: 60,
-          marginBottom: 4,
+          fontSize: isMobile ? 36 : 60,
+          marginBottom: isMobile ? 2 : 4,
+          textAlign: "center",
         }}
       >
         Our Featured Assignments
       </Typography>
       <Box
         sx={{
-          width: "80%",
+          width: isMobile ? "100%" : "80%",
           height: "60%",
           margin: "auto",
         }}
@@ -65,6 +65,7 @@ const AssignmentLanding = () => {
                   width: "100%",
                   justifyContent: "center",
                   objectFit: "cover",
+                  maxHeight: isMobile ? 200 : "100%",
                 }}
               />
             </Box>
