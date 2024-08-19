@@ -142,8 +142,8 @@ const StudentDashboard = () => {
     );
 
     const totalAlphabets = {
-      Mufradat: 31,
-      Murakkabat: 127,
+      Mufradat: 30,
+      Murakkabat: 126,
       Murqattaat: 14,
     }[assignmentType];
 
@@ -169,8 +169,8 @@ const StudentDashboard = () => {
       (video) => video.assignment_type === assignmentType
     );
     const totalVideos = {
-      Mufradat: 31,
-      Murakkabat: 127,
+      Mufradat: 30,
+      Murakkabat: 126,
       Murqattaat: 14,
     }[assignmentType];
 
