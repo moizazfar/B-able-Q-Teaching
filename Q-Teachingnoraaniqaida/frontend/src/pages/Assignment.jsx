@@ -30,11 +30,12 @@ const Assignment = () => {
   const [videoProgress, setVideoProgress] = useState([]);
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const webcamRef = useRef(null);
-  const accessToken = localStorage.getItem("access_token");
+  
 
   useEffect(() => {
     const fetchStudentProgress = async () => {
       try {
+        const accessToken = localStorage.getItem("access_token");
         const response = await axios.get(
           "http://127.0.0.1:8000/api/accounts/student-progress",
           {
@@ -51,6 +52,7 @@ const Assignment = () => {
 
     const fetchVideoProgress = async () => {
       try {
+        const accessToken = localStorage.getItem("access_token");
         const response = await axios.get(
           "http://127.0.0.1:8000/api/accounts/video-progress/",
           {
@@ -67,12 +69,10 @@ const Assignment = () => {
         console.error("Error fetching video progress:", error);
       }
     };
-
-    if (accessToken) {
       fetchStudentProgress();
       fetchVideoProgress();
-    }
-  }, [accessToken]);
+    
+  }, []);
 
   useEffect(() => {
     const updateRemainingHuroof = () => {
@@ -138,7 +138,7 @@ const Assignment = () => {
       );
 
       const marksObtained = isNewAlphabet ? 10 : 0;
-
+      const accessToken = localStorage.getItem("access_token");
       const response = await axios.post(
         "http://127.0.0.1:8000/api/accounts/student-progress/",
         {
@@ -185,6 +185,7 @@ const Assignment = () => {
 
   const processImage = async (imageSrc) => {
     try {
+      const accessToken = localStorage.getItem("access_token");
       const blob = await fetch(imageSrc).then((res) => res.blob());
       const formData = new FormData();
       formData.append("image", blob, "capture.jpg");
