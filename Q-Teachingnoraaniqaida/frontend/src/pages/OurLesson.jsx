@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
   Typography,
@@ -7,17 +7,90 @@ import {
   CardContent,
   CardActionArea,
   CardMedia,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Huruuf1 from "../Assets/quran/Rectangle 3.png";
 import Huruuf2 from "../Assets/quran/Rectangle 4.png";
 import Huruuf3 from "../Assets/quran/Rectangle 5.png";
-import arabicLesson from "../Assets/audio/Bismillah.mp3"; // Import your Arabic audio file
-// import subtitles from "../Assets/subtitles/subtitles_arabic.vtt"; // Import your Arabic subtitles file
+import arabicLesson from "../Assets/audio/Bismillah.mp3";
+import { Lock } from "@mui/icons-material";
+import axios from "axios";
 
 const OurLesson = () => {
+  const [videoProgress, setVideoProgress] = useState([]);
+  const audioRef = useRef(null);
+  const [cardStatus, setCardStatus] = useState({
+    Mufradat: false,
+    Murakkabat: false,
+    Murqattaat: false,
+  });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const navigate = useNavigate();
-  const audioRef = useRef(null); // Reference to the audio element
+  const accessToken = localStorage.getItem("access_token");
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchVideoProgress = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/accounts/video-progress/",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        setVideoProgress(response.data);
+      } catch (error) {
+        console.error("Error fetching video progress:", error);
+      }
+    };
+
+    if (accessToken) {
+      fetchVideoProgress();
+    }
+  }, [accessToken]);
+
+  useEffect(() => {
+    const updateCardStatus = () => {
+      const completedVideos = videoProgress
+        .filter((v) => v.completed)
+        .map((v) => v.video_id);
+
+      const isMufradatComplete = completedVideos.length >= 29;
+      const isMurakkabatComplete =
+        isMufradatComplete && completedVideos.length >= 155;
+      const isMurqattaatComplete =
+        isMurakkabatComplete && completedVideos.length >= 169;
+
+      setCardStatus({
+        Mufradat: true,
+        Murakkabat: isMufradatComplete,
+        Murqattaat: isMurakkabatComplete,
+      });
+    };
+
+    updateCardStatus();
+  }, [videoProgress]);
+
+  const handleLockedCardClick = () => {
+    setSnackbarMessage(
+      "You need to complete the previous lessons to unlock this lesson."
+    );
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   const onHuroofMufradatClick = () => {
     navigate("/ourlesson/huroofmufradat");
@@ -27,15 +100,9 @@ const OurLesson = () => {
     navigate("/ourlesson/huroofmurakkabat");
   };
 
-  const onHuroofMuraqattatClick = () => {
+  const onHuroofMurqattaatClick = () => {
     navigate("/ourlesson/huroofmuraqattat");
   };
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.play();
-    }
-  }, []);
 
   return (
     <Box sx={{ py: 4 }}>
@@ -69,10 +136,40 @@ const OurLesson = () => {
               maxWidth: 550,
               height: 650,
               cursor: "pointer",
-              "&:hover": { transform: "scale(1.1)" },
+              position: "relative",
+              "&:hover": cardStatus.Mufradat ? { transform: "scale(1.1)" } : {},
+              opacity: cardStatus.Mufradat ? 1 : 0.8,
             }}
-            onClick={onHuroofMufradatClick}
+            onClick={
+              cardStatus.Mufradat
+                ? onHuroofMufradatClick
+                : handleLockedCardClick
+            }
           >
+            {!cardStatus.Mufradat && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(255, 255, 255, 0.7)",
+                  zIndex: 1,
+                }}
+              >
+                <Lock
+                  sx={{
+                    marginBottom: "50px",
+                    fontSize: 60,
+                    color: "#738760",
+                  }}
+                />
+              </Box>
+            )}
             <CardActionArea>
               <CardMedia
                 component="img"
@@ -103,11 +200,43 @@ const OurLesson = () => {
             sx={{
               maxWidth: 550,
               height: 650,
-              cursor: "pointer",
-              "&:hover": { transform: "scale(1.1)" },
+              cursor: cardStatus.Murakkabat ? "pointer" : "not-allowed",
+              position: "relative",
+              "&:hover": cardStatus.Murakkabat
+                ? { transform: "scale(1.1)" }
+                : {},
+              opacity: cardStatus.Murakkabat ? 1 : 0.8,
             }}
-            onClick={onHuroofMurakkabatClick}
+            onClick={
+              cardStatus.Murakkabat
+                ? onHuroofMurakkabatClick
+                : handleLockedCardClick
+            }
           >
+            {!cardStatus.Murakkabat && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(255, 255, 255, 0.7)",
+                  zIndex: 1,
+                }}
+              >
+                <Lock
+                  sx={{
+                    marginBottom: "50px",
+                    fontSize: 60,
+                    color: "#738760",
+                  }}
+                />
+              </Box>
+            )}
             <CardActionArea>
               <CardMedia
                 component="img"
@@ -138,11 +267,43 @@ const OurLesson = () => {
             sx={{
               maxWidth: 550,
               height: 650,
-              cursor: "pointer",
-              "&:hover": { transform: "scale(1.1)" },
+              cursor: cardStatus.Murqattaat ? "pointer" : "not-allowed",
+              position: "relative",
+              "&:hover": cardStatus.Murqattaat
+                ? { transform: "scale(1.1)" }
+                : {},
+              opacity: cardStatus.Murqattaat ? 1 : 0.8,
             }}
-            onClick={onHuroofMuraqattatClick}
+            onClick={
+              cardStatus.Murqattaat
+                ? onHuroofMurqattaatClick
+                : handleLockedCardClick
+            }
           >
+            {!cardStatus.Murqattaat && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(255, 255, 255, 0.7)",
+                  zIndex: 1,
+                }}
+              >
+                <Lock
+                  sx={{
+                    marginBottom: "50px",
+                    fontSize: 60,
+                    color: "#738760",
+                  }}
+                />
+              </Box>
+            )}
             <CardActionArea>
               <CardMedia
                 component="img"
@@ -168,6 +329,21 @@ const OurLesson = () => {
           </Card>
         </Grid>
       </Grid>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="info"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
