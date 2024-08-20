@@ -205,8 +205,10 @@ const Assignment = () => {
       const blob = await fetch(imageSrc).then((res) => res.blob());
       const formData = new FormData();
       formData.append("image", blob, "capture.jpg");
+      formData.append("huroof_id", currentHuroof.id);
+
       const response = await axios.post(
-        "https://fyp-back.up.railway.app/api/recognize_sign/",
+        "http://127.0.0.1:8000/api/recognize_sign/",
         formData,
         {
           headers: {
@@ -215,7 +217,9 @@ const Assignment = () => {
           },
         }
       );
+
       const { prediction_letter, confidence_score } = response.data;
+
       if (
         currentHuroof.alphabet_name.toUpperCase() ===
           prediction_letter.toUpperCase() &&
