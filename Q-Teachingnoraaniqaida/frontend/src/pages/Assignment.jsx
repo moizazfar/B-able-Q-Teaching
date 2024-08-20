@@ -208,7 +208,7 @@ const Assignment = () => {
       formData.append("huroof_id", currentHuroof.id);
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/recognize_sign/",
+        "https://fyp-back.up.railway.app/api/recognize_sign/",
         formData,
         {
           headers: {
