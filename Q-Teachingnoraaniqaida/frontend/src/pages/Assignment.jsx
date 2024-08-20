@@ -195,7 +195,7 @@ const Assignment = () => {
 
   useEffect(() => {
     if (openCamera) {
-      const timer = setTimeout(capture, 3000);
+      const timer = setTimeout(capture, 6000);
       return () => clearTimeout(timer);
     }
   }, [openCamera]);
