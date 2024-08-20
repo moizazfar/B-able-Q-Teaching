@@ -364,13 +364,13 @@ const Assignment = () => {
             justifyContent: "center",
             overflowY: "auto",
           }}
-        >
+          >
           {allVideosWatched && remainingHuroof.length > 0 ? (
             displayedHuroof.map((huroof) => (
               <CourseCard
                 key={huroof.id}
-                huroof={huroof.alphabet_name}
-                image={huroof.image}
+                huroof={huroof.alphabet_name} // Corrected to pass alphabet_name
+                image={huroof.image} // Pass image for display
                 onClick={() => handleOpenCamera(huroof)}
                 completed={studentProgress.some(
                   (progress) =>
@@ -378,28 +378,25 @@ const Assignment = () => {
                     progress.last_completed_huroof === huroof.alphabet_name &&
                     progress.last_completed_huroof_id === huroof.id
                 )}
-              />
+                />
             ))
           ) : noVideosWatched ? (
             <Typography variant="h5" sx={{ textAlign: "center" }}>
-              It looks like you haven't watched any videos yet. To start the
-              assignment, please watch the videos first. Watching the videos
-              will help you understand the signs better and improve your
-              performance. Happy Learning!
+              It looks like you haven't watched any videos yet. To start the assignment, please watch the videos first. Watching the videos will help you understand the signs better and improve your performance. Happy Learning!
             </Typography>
           ) : (
             displayedHuroof.map((huroof) => (
               <CourseCard
                 key={huroof.id}
-                huroof={huroof.alphabet_name}
-                image={huroof.image}
+                huroof={huroof.alphabet_name} // Corrected to pass alphabet_name
+                image={huroof.image} // Pass image for display
                 onClick={() => handleOpenCamera(huroof)}
-                disabled={false}
                 completed={studentProgress.some(
                   (progress) =>
-                    progress.last_completed_huroof === huroof.alphabet_name
+                    progress.last_completed_huroof === huroof.alphabet_name &&
+                    progress.last_completed_huroof_id === huroof.id
                 )}
-              />
+                />
             ))
           )}
         </DialogContent>
