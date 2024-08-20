@@ -132,20 +132,31 @@ const Assignment = () => {
     setOpenCamera(false);
 
     try {
+      const currentHuroofId = huroofData[selectedAssignment].find(
+        (huroof) => huroof.alphabet_name === currentHuroof.alphabet_name
+      )?.id;
+
+      if (currentHuroofId === undefined || currentHuroofId === null) {
+        console.error("Error: currentHuroofId is not set correctly.");
+        return;
+      }
+
       const isNewAlphabet = studentProgress.every(
         (progress) =>
-          progress.last_completed_huroof !== currentHuroof.alphabet_name
+          !(
+            progress.last_completed_huroof === currentHuroof.alphabet_name &&
+            progress.last_completed_huroof_id === currentHuroofId
+          )
       );
-
-      const marksObtained = isNewAlphabet ? 10 : 0;
 
       const response = await axios.post(
         "https://fyp-back.up.railway.app/api/accounts/student-progress/",
         {
           assignment_type: selectedAssignment,
           completed_assignments: 1,
+          last_completed_huroof_id: parseInt(currentHuroofId),
           last_completed_huroof: currentHuroof.alphabet_name,
-          marks_obtained: marksObtained,
+          marks_obtained: isNewAlphabet ? 10 : 0,
         },
         {
           headers: {
@@ -161,7 +172,6 @@ const Assignment = () => {
       );
 
       setOpenSuccessModal(true);
-
       if (remainingHuroof.length === 1) {
         alert(
           `Congratulations! You've completed all letters in ${selectedAssignment}. Moving to the next assignment.`
@@ -364,40 +374,39 @@ const Assignment = () => {
             justifyContent: "center",
             overflowY: "auto",
           }}
-        >
+          >
           {allVideosWatched && remainingHuroof.length > 0 ? (
             displayedHuroof.map((huroof) => (
               <CourseCard
                 key={huroof.id}
-                huroof={huroof}
+                huroof={huroof.alphabet_name} // Corrected to pass alphabet_name
+                image={huroof.image} // Pass image for display
                 onClick={() => handleOpenCamera(huroof)}
-                isCompleted={studentProgress.some(
+                completed={studentProgress.some(
                   (progress) =>
                     progress.assignment_type === selectedAssignment &&
-                    progress.last_completed_huroof === huroof.alphabet_name
+                    progress.last_completed_huroof === huroof.alphabet_name &&
+                    progress.last_completed_huroof_id === huroof.id
                 )}
-              />
+                />
             ))
           ) : noVideosWatched ? (
             <Typography variant="h5" sx={{ textAlign: "center" }}>
-              It looks like you haven't watched any videos yet. To start the
-              assignment, please watch the videos first. Watching the videos
-              will help you understand the signs better and improve your
-              performance. Happy Learning!
+              It looks like you haven't watched any videos yet. To start the assignment, please watch the videos first. Watching the videos will help you understand the signs better and improve your performance. Happy Learning!
             </Typography>
           ) : (
             displayedHuroof.map((huroof) => (
               <CourseCard
                 key={huroof.id}
-                huroof={huroof.alphabet_name}
-                image={huroof.image}
+                huroof={huroof.alphabet_name} // Corrected to pass alphabet_name
+                image={huroof.image} // Pass image for display
                 onClick={() => handleOpenCamera(huroof)}
-                disabled={false}
                 completed={studentProgress.some(
                   (progress) =>
-                    progress.last_completed_huroof === huroof.alphabet_name
+                    progress.last_completed_huroof === huroof.alphabet_name &&
+                    progress.last_completed_huroof_id === huroof.id
                 )}
-              />
+                />
             ))
           )}
         </DialogContent>
