@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
-  Paper,
   Typography,
   Dialog,
   DialogContent,
@@ -26,7 +25,7 @@ const Assignment = () => {
   const [currentHuroof, setCurrentHuroof] = useState(null);
   const [displayedHuroof, setDisplayedHuroof] = useState([]);
   const [remainingHuroof, setRemainingHuroof] = useState([]);
-  const [selectedAssignment, setSelectedAssignment] = useState("");
+  const [selectedAssignment, setSelectedAssignment] = useState("Mufradat");
   const [studentProgress, setStudentProgress] = useState([]);
   const [videoProgress, setVideoProgress] = useState([]);
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
@@ -37,7 +36,7 @@ const Assignment = () => {
     const fetchStudentProgress = async () => {
       try {
         const response = await axios.get(
-          "https://fyp-back.up.railway.app/api/accounts/student-progress",
+          "http://127.0.0.1:8000/api/accounts/student-progress",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -53,7 +52,7 @@ const Assignment = () => {
     const fetchVideoProgress = async () => {
       try {
         const response = await axios.get(
-          "https://fyp-back.up.railway.app/api/accounts/video-progress/",
+          "http://127.0.0.1:8000/api/accounts/video-progress/",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -92,10 +91,30 @@ const Assignment = () => {
       setDisplayedHuroof(remainingHuroof);
     }
   }, [remainingHuroof]);
-  console.log(currentHuroof);
+
+  const isAssignmentLocked = (assignment) => {
+    const assignmentsOrder = ["Mufradat", "Murakkabat", "Murqattaat"];
+    const currentIndex = assignmentsOrder.indexOf(assignment);
+    const previousAssignment = assignmentsOrder[currentIndex - 1];
+
+    if (assignment === "Mufradat") return false;
+
+    const isPreviousAssignmentCompleted = studentProgress.some(
+      (progress) =>
+        progress.assignment_type === previousAssignment &&
+        progress.completed_assignments === huroofData[previousAssignment].length
+    );
+
+    return !isPreviousAssignmentCompleted;
+  };
+
   const handleOpenModal = (assignment) => {
-    setSelectedAssignment(assignment);
-    setOpenModal(true);
+    if (!isAssignmentLocked(assignment)) {
+      setSelectedAssignment(assignment);
+      setOpenModal(true);
+    } else {
+      alert("Complete the previous assignment to unlock this one.");
+    }
   };
 
   const handleCloseModal = () => {
@@ -113,31 +132,20 @@ const Assignment = () => {
     setOpenCamera(false);
 
     try {
-      const currentHuroofId = huroofData[selectedAssignment].find(
-        (huroof) => huroof.alphabet_name === currentHuroof.alphabet_name
-      )?.id;
-
-      if (currentHuroofId === undefined || currentHuroofId === null) {
-        console.error("Error: currentHuroofId is not set correctly.");
-        return;
-      }
-
       const isNewAlphabet = studentProgress.every(
         (progress) =>
-          !(
-            progress.last_completed_huroof === currentHuroof.alphabet_name &&
-            progress.last_completed_huroof_id === currentHuroofId
-          )
+          progress.last_completed_huroof !== currentHuroof.alphabet_name
       );
 
+      const marksObtained = isNewAlphabet ? 10 : 0;
+
       const response = await axios.post(
-        "https://fyp-back.up.railway.app/api/accounts/student-progress/",
+        "http://127.0.0.1:8000/api/accounts/student-progress/",
         {
           assignment_type: selectedAssignment,
           completed_assignments: 1,
-          last_completed_huroof_id: parseInt(currentHuroofId),
           last_completed_huroof: currentHuroof.alphabet_name,
-          marks_obtained: isNewAlphabet ? 10 : 0,
+          marks_obtained: marksObtained,
         },
         {
           headers: {
@@ -153,6 +161,7 @@ const Assignment = () => {
       );
 
       setOpenSuccessModal(true);
+
       if (remainingHuroof.length === 1) {
         alert(
           `Congratulations! You've completed all letters in ${selectedAssignment}. Moving to the next assignment.`
@@ -180,7 +189,7 @@ const Assignment = () => {
       const formData = new FormData();
       formData.append("image", blob, "capture.jpg");
       const response = await axios.post(
-        "https://fyp-back.up.railway.app/api/recognize_sign/",
+        "http://127.0.0.1:8000/api/recognize_sign/",
         formData,
         {
           headers: {
@@ -220,8 +229,7 @@ const Assignment = () => {
             !studentProgress.some(
               (progress) =>
                 progress.assignment_type === nextAssignment &&
-                progress.last_completed_huroof === huroof.alphabet_name &&
-                process.last_completed_huroof_id === huroof.id
+                progress.last_completed_huroof === huroof.alphabet_name
             )
         )
       );
@@ -293,21 +301,26 @@ const Assignment = () => {
             huroof="ھُرُوفُ المُفرَدَات"
             letters="Individual Letters"
             onClick={() => handleOpenModal("Mufradat")}
+            locked={isAssignmentLocked("Mufradat")}
           />
           <AssignmentHuroof
             prop="Huroof Al-Murakkabat"
             huroof="ھُرُوفُ المُرَکَّبَات"
             letters="Compound Letters"
             onClick={() => handleOpenModal("Murakkabat")}
+            locked={isAssignmentLocked("Murakkabat")}
           />
           <AssignmentHuroof
             prop="Huroof Al-Murqattaat"
             huroof="ھُرُوفُ المُقَطَّعَات"
             letters="Disjoined Letters"
             onClick={() => handleOpenModal("Murqattaat")}
+            locked={isAssignmentLocked("Murqattaat")}
           />
         </Box>
       </Box>
+
+      {/* Assignment Modal */}
       <Dialog
         open={openModal}
         onClose={handleCloseModal}
@@ -361,8 +374,7 @@ const Assignment = () => {
                 isCompleted={studentProgress.some(
                   (progress) =>
                     progress.assignment_type === selectedAssignment &&
-                    progress.last_completed_huroof === huroof.alphabet_name &&
-                    progress.last_completed_huroof_id === huroof.id
+                    progress.last_completed_huroof === huroof.alphabet_name
                 )}
               />
             ))
@@ -383,14 +395,15 @@ const Assignment = () => {
                 disabled={false}
                 completed={studentProgress.some(
                   (progress) =>
-                    progress.last_completed_huroof === huroof.alphabet_name &&
-                    progress.last_completed_huroof_id === huroof.id
+                    progress.last_completed_huroof === huroof.alphabet_name
                 )}
               />
             ))
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Camera Modal */}
       <Dialog open={openCamera} onClose={() => setOpenCamera(false)} fullWidth>
         <Box
           sx={{
@@ -447,30 +460,36 @@ const Assignment = () => {
           </Box>
         </DialogContent>
       </Dialog>
+
+      {/* Success Modal */}
       <Dialog
         open={openSuccessModal}
         onClose={() => setOpenSuccessModal(false)}
-        PaperProps={{
-          sx: { borderRadius: "20px", backgroundColor: green[100] },
-        }}
       >
-        <DialogContent
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 4,
-            textAlign: "center",
-          }}
-        >
-          <CheckCircleOutlineIcon sx={{ fontSize: 60, color: green[700] }} />
-          <Typography
-            variant="h6"
-            sx={{ fontFamily: "Kaushan Script", color: green[700], mt: 2 }}
+        <DialogContent>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+            }}
           >
-            Success! Your sign was recognized accurately.
-          </Typography>
+            <CheckCircleOutlineIcon
+              sx={{ fontSize: 80, color: green[500], marginBottom: 2 }}
+            />
+            <Typography variant="h6" sx={{ marginBottom: 2 }}>
+              Success! You have completed this assignment.
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setOpenSuccessModal(false)}
+            >
+              OK
+            </Button>
+          </Box>
         </DialogContent>
       </Dialog>
     </Box>
