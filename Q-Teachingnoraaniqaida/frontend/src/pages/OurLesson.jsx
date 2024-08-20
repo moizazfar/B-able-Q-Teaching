@@ -29,7 +29,7 @@ const OurLesson = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const navigate = useNavigate();
-
+  const accessToken = localStorage.getItem("access_token");
 
   useEffect(() => {
     if (audioRef.current) {
@@ -38,11 +38,10 @@ const OurLesson = () => {
   }, []);
 
   useEffect(() => {
-    const fetchProgress = async () => {
+    const fetchVideoProgress = async () => {
       try {
-        const accessToken = localStorage.getItem("access_token");
         const response = await axios.get(
-          "https://fyp-back.up.railway.app/api/accounts/video-progress/",
+          "http://127.0.0.1:8000/api/accounts/video-progress/",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -54,8 +53,11 @@ const OurLesson = () => {
         console.error("Error fetching video progress:", error);
       }
     };
-    fetchProgress();
-  }, []);
+
+    if (accessToken) {
+      fetchVideoProgress();
+    }
+  }, [accessToken]);
 
   useEffect(() => {
     const updateCardStatus = () => {
