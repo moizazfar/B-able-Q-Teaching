@@ -369,12 +369,13 @@ const Assignment = () => {
             displayedHuroof.map((huroof) => (
               <CourseCard
                 key={huroof.id}
-                huroof={huroof.alphabet_name}
+                huroof={huroof}
                 onClick={() => handleOpenCamera(huroof)}
                 isCompleted={studentProgress.some(
                   (progress) =>
                     progress.assignment_type === selectedAssignment &&
-                    progress.last_completed_huroof === huroof.alphabet_name
+                    progress.last_completed_huroof === huroof.alphabet_name &&
+                    progress.last_completed_huroof_id === huroof.id
                 )}
               />
             ))
