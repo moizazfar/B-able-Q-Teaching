@@ -193,6 +193,13 @@ const Assignment = () => {
     processImage(imageSrc);
   };
 
+  useEffect(() => {
+    if (openCamera) {
+      const timer = setTimeout(capture, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [openCamera]);
+
   const processImage = async (imageSrc) => {
     try {
       const blob = await fetch(imageSrc).then((res) => res.blob());
@@ -444,29 +451,9 @@ const Assignment = () => {
             ref={webcamRef}
             screenshotFormat="image/jpeg"
             width="100%"
-            height="100%"
-          />
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: 2,
-            }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={capture}
-              sx={{
-                fontFamily: "Kaushan Script",
-                backgroundColor: "#DCBA84",
-                "&:hover": { backgroundColor: "#caa774" },
-              }}
-            >
-              Capture
-            </Button>
-          </Box>
+            videoConstraints={{
+            facingMode: "user",
+            }}/>
         </DialogContent>
       </Dialog>
 
