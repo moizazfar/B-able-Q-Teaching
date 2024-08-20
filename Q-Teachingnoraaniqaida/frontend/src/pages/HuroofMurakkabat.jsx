@@ -67,7 +67,7 @@ const HuroofMurakkabat = () => {
       try {
         const accessToken = localStorage.getItem("access_token");
         const response = await axios.get(
-          "https://fyp-back.up.railway.app/api/accounts/video-progress/",
+          "http://127.0.0.1:8000/api/accounts/video-progress/",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -103,7 +103,7 @@ const HuroofMurakkabat = () => {
         setCompletedVideos([...completedVideos, course.id]);
         const accessToken = localStorage.getItem("access_token");
         await axios.post(
-          "https://fyp-back.up.railway.app/api/accounts/video-progress/",
+          "http://127.0.0.1:8000/api/accounts/video-progress/",
           {
             video_id: course.id,
             completed: true,
