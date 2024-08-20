@@ -372,7 +372,7 @@ const Assignment = () => {
                 huroof={huroof.alphabet_name}
                 image={huroof.image}
                 onClick={() => handleOpenCamera(huroof)}
-                isCompleted={studentProgress.some(
+                completed={studentProgress.some(
                   (progress) =>
                     progress.assignment_type === selectedAssignment &&
                     progress.last_completed_huroof === huroof.alphabet_name &&
