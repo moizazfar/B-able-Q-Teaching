@@ -480,7 +480,7 @@ const Assignment = () => {
               sx={{ fontSize: 80, color: green[500], marginBottom: 2 }}
             />
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
-              Success! You have completed this assignment.
+              Success! You have completed this Huroof.
             </Typography>
             <Button
               variant="contained"
