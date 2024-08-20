@@ -34,7 +34,7 @@ const huroofData = {
       id: 5,
       alphabet_name: "Haa",
       image: require("../Assets/huroof/Huroof Mufradat/haa.png"),
-      video: require("../Assets/huroof/videos/haa1.mp4"),
+      video: require("../Assets/huroof/videos/haa.mp4"),
     },
     {
       id: 6,
