@@ -1,5 +1,3 @@
-import laamalif from "../Assets/huroof/Huroof Murakkabat/laamalif.png";
-
 const huroofData = {
   Mufradat: [
     {
@@ -193,7 +191,7 @@ const huroofData = {
     {
       id: 31,
       alphabet_name: "Lam Alif",
-      image: laamalif,
+      image: require("../Assets/huroof/Huroof Murakkabat/laamalif.png"),
       video: require("../Assets/huroof/videos/alif.mp4"),
     },
     {
@@ -948,7 +946,6 @@ const huroofData = {
       image: require("../Assets/huroof/Huroof Muraqattat/aliflaammeem.png"),
       video: require("../Assets/huroof/videos/alif.mp4"),
     },
-    ,
     {
       id: 157,
       alphabet_name: "Alif Laam Meem Suad",
