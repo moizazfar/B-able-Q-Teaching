@@ -364,39 +364,40 @@ const Assignment = () => {
             justifyContent: "center",
             overflowY: "auto",
           }}
-          >
+        >
           {allVideosWatched && remainingHuroof.length > 0 ? (
             displayedHuroof.map((huroof) => (
               <CourseCard
                 key={huroof.id}
-                huroof={huroof.alphabet_name} // Corrected to pass alphabet_name
-                image={huroof.image} // Pass image for display
+                huroof={huroof}
                 onClick={() => handleOpenCamera(huroof)}
-                completed={studentProgress.some(
+                isCompleted={studentProgress.some(
                   (progress) =>
                     progress.assignment_type === selectedAssignment &&
-                    progress.last_completed_huroof === huroof.alphabet_name &&
-                    progress.last_completed_huroof_id === huroof.id
+                    progress.last_completed_huroof === huroof.alphabet_name
                 )}
-                />
+              />
             ))
           ) : noVideosWatched ? (
             <Typography variant="h5" sx={{ textAlign: "center" }}>
-              It looks like you haven't watched any videos yet. To start the assignment, please watch the videos first. Watching the videos will help you understand the signs better and improve your performance. Happy Learning!
+              It looks like you haven't watched any videos yet. To start the
+              assignment, please watch the videos first. Watching the videos
+              will help you understand the signs better and improve your
+              performance. Happy Learning!
             </Typography>
           ) : (
             displayedHuroof.map((huroof) => (
               <CourseCard
                 key={huroof.id}
-                huroof={huroof.alphabet_name} // Corrected to pass alphabet_name
-                image={huroof.image} // Pass image for display
+                huroof={huroof.alphabet_name}
+                image={huroof.image}
                 onClick={() => handleOpenCamera(huroof)}
+                disabled={false}
                 completed={studentProgress.some(
                   (progress) =>
-                    progress.last_completed_huroof === huroof.alphabet_name &&
-                    progress.last_completed_huroof_id === huroof.id
+                    progress.last_completed_huroof === huroof.alphabet_name
                 )}
-                />
+              />
             ))
           )}
         </DialogContent>
